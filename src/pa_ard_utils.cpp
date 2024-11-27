@@ -6,10 +6,6 @@
 
 #include <Arduino.h>
 
-// Time Var
-
-pa_define_current_time_var;
-
 namespace proto_activities::ard_utils {
 
 // Timing

@@ -10,7 +10,10 @@ namespace proto_activities::ard_utils {
 
 // Timing
 
+/// A statement to dalay for the given multiple of minutes.
 #define pa_delay_m(time_m) pa_delay_s (time_m * 60);
+
+/// A statement to run the body once every mulitple of minuts given.
 #define pa_every_m(time_m) pa_every_s (time_m * 60)
 
 /// An activity which delays for the given milliseconds.
