@@ -19,6 +19,14 @@ namespace proto_activities::ard_utils {
 /// An activity which delays for the given milliseconds.
 pa_activity_sig (Delay_ms, pa_time_t ms);
 
+// Logical
+
+/// An activity which converts a binary level into signals for its raising and falling edges.
+pa_activity_sig (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& falling);
+
+/// An activity which converts raising and falling edges into a binary  level.
+pa_activity_sig (EdgeToLevelConverter, bool raising, bool falling, bool& level);
+
 // Button
 
 /// An activity to debounce a physical button.

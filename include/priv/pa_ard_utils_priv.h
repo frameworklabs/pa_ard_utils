@@ -14,6 +14,11 @@ namespace proto_activities::ard_utils {
 
 pa_activity_ctx_tm (Delay_ms);
 
+// Logical
+
+pa_activity_ctx (LevelToEdgeConverter, bool prev_level);
+pa_activity_ctx (EdgeToLevelConverter);
+
 // Button
 
 namespace internal {

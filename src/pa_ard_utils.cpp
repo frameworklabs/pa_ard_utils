@@ -14,6 +14,33 @@ pa_activity_def (Delay_ms, pa_time_t delay) {
     pa_delay_ms (delay);
 } pa_end;
 
+// Logical
+
+pa_activity_def (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& falling) {
+    pa_self.prev_level = level;
+    pa_every (level != pa_self.prev_level) {
+        if (level) {
+            pa_emit (raising);
+        } else {
+            pa_emit (falling);
+        }
+        pa_self.prev_level = level;
+    } pa_every_end
+} pa_end
+
+pa_activity_def (EdgeToLevelConverter, bool raising, bool falling, bool& level) {
+    pa_await_immediate (raising || falling);
+    if (falling) {
+        level = false;
+    }
+    pa_repeat {
+        pa_await_immediate (raising);
+        level = true;
+        pa_await (falling);
+        level = false;
+    }
+} pa_end
+
 // Button
 
 namespace internal {
