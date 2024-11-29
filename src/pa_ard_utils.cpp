@@ -48,14 +48,14 @@ pa_activity_def (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& fall
 } pa_end
 
 pa_activity_def (EdgeToLevelConverter, bool raising, bool falling, bool& level) {
-    pa_await_immediate (raising || falling);
+    pa_await_immediate ((raising && !falling) || (falling && !raising));
     if (falling) {
         level = false;
     }
     pa_repeat {
-        pa_await_immediate (raising);
+        pa_await_immediate (raising && !falling);
         level = true;
-        pa_await (falling);
+        pa_await (falling && !raising);
         level = false;
     }
 } pa_end
