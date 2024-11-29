@@ -8,7 +8,7 @@
 
 #include <proto_activities.h>
 
-namespace proto_activities::ard_utils {
+namespace proto_activities { namespace ard_utils {
 
 // Timing
 
@@ -42,4 +42,4 @@ pa_activity_decl (PressRecognizerImpl, pa_ctx_tm(pa_use(ReleasePressDetector); b
 pa_activity_ctx (PressInspector);
 pa_activity_ctx (PressRecognizer, pa_co_res(3); pa_sig_res; pa_use(ButtonRecognizer); pa_use_ns(internal, PressRecognizerImpl); pa_use(PressInspector); pa_def_sig(btn_was_pressed); pa_def_sig(btn_was_released));
 
-} // namespace proto_activities::ard_utils
+} } // namespace proto_activities::ard_utils

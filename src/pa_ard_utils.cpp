@@ -6,7 +6,7 @@
 
 #include <Arduino.h>
 
-namespace proto_activities::ard_utils {
+namespace proto_activities { namespace ard_utils {
 
 // Timing
 
@@ -130,12 +130,10 @@ pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool 
         if (pa_self.was_pressed) {
             press = Press::DOUBLE;
             pa_pause;
-        }
-        else if (pa_self.was_released) {
+        } else if (pa_self.was_released) {
             press = Press::SHORT;
             pa_pause;
-        }
-        else {
+        } else {
             press = Press::LONG;
             pa_await (btn_was_released);
         }
@@ -178,4 +176,4 @@ pa_activity_def (PressInspector, const char* msg, Press press) {
     } pa_every_end
 } pa_end
 
-} // namespace proto_activities::ard_utils
+} } // namespace proto_activities::ard_utils

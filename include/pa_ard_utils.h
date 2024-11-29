@@ -6,7 +6,7 @@
 
 #include "priv/pa_ard_utils_priv.h"
 
-namespace proto_activities::ard_utils {
+namespace proto_activities { namespace ard_utils {
 
 // Timing
 
@@ -43,4 +43,4 @@ pa_activity_sig (PressRecognizer, uint8_t pin, Press& press, const PressRecogniz
 // An activity which prints to serial when the press status changes.
 pa_activity_sig (PressInspector, const char* msg, Press press);
 
-} // namespace proto_activities::ard_utils
+} } // namespace proto_activities::ard_utils

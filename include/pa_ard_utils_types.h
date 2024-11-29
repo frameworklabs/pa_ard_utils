@@ -6,7 +6,7 @@
 
 #include <proto_activities.h> // for pa_time_t
 
-namespace proto_activities::ard_utils {
+namespace proto_activities { namespace ard_utils {
 
 // Button
 
@@ -48,4 +48,4 @@ struct PressRecognizerConfig {
     pa_time_t double_tap_time_ms;
 };
 
-} // namespace proto_activities::ard_utils
+} } // namespace proto_activities::ard_utils

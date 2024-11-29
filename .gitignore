@@ -32,4 +32,4 @@
 *.app
 
 # Mac
-.gitignore
+.DS_Store
