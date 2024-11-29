@@ -27,12 +27,15 @@ pa_activity_sig (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& fall
 /// An activity which converts raising and falling edges into a binary  level.
 pa_activity_sig (EdgeToLevelConverter, bool raising, bool falling, bool& level);
 
+/// An activity which prints to serial when the level changes.
+pa_activity_sig (LevelInspector, bool level, const char* high_msg, const char* low_msg);
+
 // Button
 
 /// An activity to debounce a physical button.
 pa_activity_sig (ButtonRecognizer, uint8_t pin, pa_sig& was_pressed, pa_sig& was_released, const ButtonRecognizerConfig& config = {});
 
-// An activity which prints to serial when the pressed or released status change.
+/// An activity which prints to serial when the pressed or released status change.
 pa_activity_sig (ButtonInspector, const char* msg, bool was_pressed, bool was_released);
 
 // Press
@@ -40,7 +43,7 @@ pa_activity_sig (ButtonInspector, const char* msg, bool was_pressed, bool was_re
 /// An activity to recognize presses, double presses and long presses of a physical button.
 pa_activity_sig (PressRecognizer, uint8_t pin, Press& press, const PressRecognizerConfig& config = {});
 
-// An activity which prints to serial when the press status changes.
+/// An activity which prints to serial when the press status changes.
 pa_activity_sig (PressInspector, const char* msg, Press press);
 
 } } // namespace proto_activities::ard_utils

@@ -16,8 +16,15 @@ pa_activity_ctx_tm (Delay_ms);
 
 // Logical
 
+namespace internal {
+
+pa_activity_decl (LevelInspectorImpl, pa_ctx(), bool level, bool rising, bool falling, const char* high_msg, const char* low_msg);
+
+} // namespace
+
 pa_activity_ctx (LevelToEdgeConverter, bool prev_level);
 pa_activity_ctx (EdgeToLevelConverter);
+pa_activity_ctx (LevelInspector, pa_co_res(2); pa_sig_res; pa_use(LevelToEdgeConverter); pa_use_ns(internal, LevelInspectorImpl); pa_def_sig(raising); pa_def_sig(falling));
 
 // Button
 

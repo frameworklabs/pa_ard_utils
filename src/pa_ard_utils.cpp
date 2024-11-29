@@ -16,6 +16,25 @@ pa_activity_def (Delay_ms, pa_time_t delay) {
 
 // Logical
 
+namespace internal {
+
+pa_activity_def (LevelInspectorImpl, bool level, bool rising, bool falling, const char* high_msg, const char* low_msg) {
+    if (level) {
+        Serial.println(high_msg);
+    } else {
+        Serial.println(low_msg);
+    }
+    pa_every (rising || falling) {
+        if (rising) {
+            Serial.println(high_msg);
+        } else /* falling */ {
+            Serial.println(low_msg);
+        }
+    } pa_every_end
+} pa_end
+
+} // namespace internal
+
 pa_activity_def (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& falling) {
     pa_self.prev_level = level;
     pa_every (level != pa_self.prev_level) {
@@ -39,6 +58,14 @@ pa_activity_def (EdgeToLevelConverter, bool raising, bool falling, bool& level) 
         pa_await (falling);
         level = false;
     }
+} pa_end
+
+pa_activity_def (LevelInspector, bool level, const char* high_msg, const char* low_msg) {
+    using namespace internal;
+    pa_co(2) {
+        pa_with (LevelToEdgeConverter, level, pa_self.raising, pa_self.falling);
+        pa_with (LevelInspectorImpl, level, pa_self.raising, pa_self.falling, high_msg, low_msg);
+    } pa_co_end
 } pa_end
 
 // Button
@@ -79,7 +106,7 @@ pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_sig& was_pressed, pa_sig&
     }
 } pa_end
 
-} // namespace
+} // namespace internal
 
 pa_activity_def (ButtonRecognizer, uint8_t pin, pa_sig& was_pressed, pa_sig& was_released, const ButtonRecognizerConfig& config) {
     using namespace internal;
@@ -140,7 +167,7 @@ pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool 
     }
 } pa_end
 
-} // namespace
+} // namespace internal
 
 pa_activity_def (PressRecognizer, uint8_t pin, Press& press, const PressRecognizerConfig& config) {
     using namespace internal;
