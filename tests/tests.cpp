@@ -36,7 +36,7 @@ using namespace proto_activities::ard_utils;
 
 // LevelToEdgeConverter Tests
 
-pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_sig& proceed, bool& level, bool& expected_raising, bool& expected_falling) {
+pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& level, bool& expected_raising, bool& expected_falling) {
     
     // Test 1 - start with low level
 
@@ -118,7 +118,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_sig& proceed, bool& leve
     
 } pa_end
 
-pa_activity (TestLevelToEdgeConverterTest, pa_ctx(pa_use(LevelToEdgeConverter)), bool proceed, bool level, pa_sig& raising, pa_sig& falling) {
+pa_activity (TestLevelToEdgeConverterTest, pa_ctx(pa_use(LevelToEdgeConverter)), bool proceed, bool level, pa_signal& raising, pa_signal& falling) {
     pa_when_abort (proceed, LevelToEdgeConverter, level, raising, falling);
     pa_when_abort (proceed, LevelToEdgeConverter, level, raising, falling);
 } pa_end
@@ -130,9 +130,9 @@ pa_activity (TestLevelToEdgeConverterCheck, pa_ctx(), bool actual_raising, bool 
     } pa_always_end
 } pa_end
 
-pa_activity (TestLevelToEdgeConverter, pa_ctx(pa_co_res(4); pa_sig_res;
+pa_activity (TestLevelToEdgeConverter, pa_ctx(pa_co_res(4); pa_signal_res;
                                               pa_use(TestLevelToEdgeConverterSpec); pa_use(TestLevelToEdgeConverterTest); pa_use(TestLevelToEdgeConverterCheck);
-                                              pa_def_sig(proceed); bool level; bool expected_raising; bool expected_falling; pa_def_sig(actual_raising); pa_def_sig(actual_falling))) {
+                                              pa_def_signal(proceed); bool level; bool expected_raising; bool expected_falling; pa_def_signal(actual_raising); pa_def_signal(actual_falling))) {
     pa_co(3) {
         pa_with (TestLevelToEdgeConverterSpec, pa_self.proceed, pa_self.level, pa_self.expected_raising, pa_self.expected_falling);
         pa_with (TestLevelToEdgeConverterTest, pa_self.proceed, pa_self.level, pa_self.actual_raising, pa_self.actual_falling);
@@ -142,7 +142,7 @@ pa_activity (TestLevelToEdgeConverter, pa_ctx(pa_co_res(4); pa_sig_res;
 
 // EdgeToLevelConverter Tests
 
-pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_sig& proceed, bool& initial_level, bool& raising, bool& falling, bool& expected_level) {
+pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& initial_level, bool& raising, bool& falling, bool& expected_level) {
 
     // Test 1 - level primed with false
 
@@ -314,9 +314,9 @@ pa_activity (TestEdgeToLevelConverterCheck, pa_ctx(), bool actual, bool expected
     } pa_always_end
 } pa_end
 
-pa_activity (TestEdgeToLevelConverter, pa_ctx(pa_co_res(4); pa_sig_res;
+pa_activity (TestEdgeToLevelConverter, pa_ctx(pa_co_res(4); pa_signal_res;
                                               pa_use(TestEdgeToLevelConverterSpec); pa_use(TestEdgeToLevelConverterTest); pa_use(TestEdgeToLevelConverterCheck);
-                                              pa_def_sig(proceed); bool raising; bool falling; bool expected_level; bool actual_level)) {
+                                              pa_def_signal(proceed); bool raising; bool falling; bool expected_level; bool actual_level)) {
     pa_co(3) {
         pa_with (TestEdgeToLevelConverterSpec, pa_self.proceed, pa_self.actual_level, pa_self.raising, pa_self.falling, pa_self.expected_level);
         pa_with (TestEdgeToLevelConverterTest, pa_self.proceed, pa_self.raising, pa_self.falling, pa_self.actual_level);

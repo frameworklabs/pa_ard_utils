@@ -35,7 +35,7 @@ pa_activity_def (LevelInspectorImpl, bool level, bool rising, bool falling, cons
 
 } // namespace internal
 
-pa_activity_def (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& falling) {
+pa_activity_def (LevelToEdgeConverter, bool level, pa_signal& raising, pa_signal& falling) {
     pa_self.prev_level = level;
     pa_every (level != pa_self.prev_level) {
         if (level) {
@@ -80,7 +80,7 @@ bool is_pressed(uint8_t pin, const ButtonRecognizerConfig& config) {
     }
 }
 
-pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_sig& was_pressed, pa_sig& was_released, const ButtonRecognizerConfig& config) {
+pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config) {
     if (config.low_is_pressed) {
         pinMode(pin, INPUT_PULLUP);
     } else {
@@ -108,7 +108,7 @@ pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_sig& was_pressed, pa_sig&
 
 } // namespace internal
 
-pa_activity_def (ButtonRecognizer, uint8_t pin, pa_sig& was_pressed, pa_sig& was_released, const ButtonRecognizerConfig& config) {
+pa_activity_def (ButtonRecognizer, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config) {
     using namespace internal;
     if (config.inspect_msg == nullptr) {
         pa_run (ButtonRecognizerImpl, pin, was_pressed, was_released, config);

@@ -22,7 +22,7 @@ pa_activity_sig (Delay_ms, pa_time_t ms);
 // Logical
 
 /// An activity which converts a binary level into signals for its raising and falling edges.
-pa_activity_sig (LevelToEdgeConverter, bool level, pa_sig& raising, pa_sig& falling);
+pa_activity_sig (LevelToEdgeConverter, bool level, pa_signal& raising, pa_signal& falling);
 
 /// An activity which converts raising and falling edges into a binary  level.
 pa_activity_sig (EdgeToLevelConverter, bool raising, bool falling, bool& level);
@@ -33,7 +33,7 @@ pa_activity_sig (LevelInspector, bool level, const char* high_msg, const char* l
 // Button
 
 /// An activity to debounce a physical button.
-pa_activity_sig (ButtonRecognizer, uint8_t pin, pa_sig& was_pressed, pa_sig& was_released, const ButtonRecognizerConfig& config = {});
+pa_activity_sig (ButtonRecognizer, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config = {});
 
 /// An activity which prints to serial when the pressed or released status change.
 pa_activity_sig (ButtonInspector, const char* msg, bool was_pressed, bool was_released);
