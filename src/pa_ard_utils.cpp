@@ -146,30 +146,33 @@ pa_activity_def (ReleasePressDetector, bool btn_was_pressed, bool btn_was_releas
     was_pressed = true;
 } pa_end
 
-pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool btn_was_pressed, bool btn_was_released, Press& press) {
-    pa_repeat {
-        press = Press::NO;
+pa_activity_def (PressSustainer, Press press, PressSignal& sig) {
+    pa_always {
+        pa_emit_val (sig, std::move(press));
+    } pa_always_end
+} pa_end
 
+pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool btn_was_pressed, bool btn_was_released, PressSignal& press) {
+    pa_repeat {
         pa_await_immediate (btn_was_pressed);
 
         pa_after_ms_abort (config.double_tap_time_ms, ReleasePressDetector, btn_was_pressed, btn_was_released, pa_self.was_pressed, pa_self.was_released);
 
         if (pa_self.was_pressed) {
-            press = Press::DOUBLE;
+            pa_emit_val (press, Press::DOUBLE);
             pa_pause;
         } else if (pa_self.was_released) {
-            press = Press::SHORT;
+            pa_emit_val (press, Press::SHORT);
             pa_pause;
         } else {
-            press = Press::LONG;
-            pa_await (btn_was_released);
+            pa_when_abort (btn_was_released, PressSustainer, Press::LONG, press);
         }
     }
 } pa_end
 
 } // namespace internal
 
-pa_activity_def (PressRecognizer, uint8_t pin, Press& press, const PressRecognizerConfig& config) {
+pa_activity_def (PressRecognizer, uint8_t pin, PressSignal& press, const PressRecognizerConfig& config) {
     using namespace internal;
     if (config.button_config.inspect_msg == nullptr) {
         pa_co(2) {
@@ -185,18 +188,17 @@ pa_activity_def (PressRecognizer, uint8_t pin, Press& press, const PressRecogniz
     }
 } pa_end
 
-pa_activity_def (PressInspector, const char* msg, Press press) {
-    pa_every (press != Press::NO) {
+pa_activity_def (PressInspector, const char* msg, const PressSignal& press) {
+    pa_every (press) {
         Serial.print(msg);
         Serial.print(" recognized ");
-        switch (press) {
+        switch (press.val()) {
             case Press::SHORT: Serial.println("SHORT press"); break;
             case Press::LONG: Serial.println("LONG press begin"); break;
             case Press::DOUBLE: Serial.println("DOUBLE press"); break;
-            default: break;
         }
-        if (press == Press::LONG) {
-            pa_await (press == Press::NO);
+        if (press.val() == Press::LONG) {
+            pa_await (!press);
             Serial.print(msg);
             Serial.println(" recognized LONG press end");
         }

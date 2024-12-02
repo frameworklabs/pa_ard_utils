@@ -41,9 +41,9 @@ pa_activity_sig (ButtonInspector, const char* msg, bool was_pressed, bool was_re
 // Press
 
 /// An activity to recognize presses, double presses and long presses of a physical button.
-pa_activity_sig (PressRecognizer, uint8_t pin, Press& press, const PressRecognizerConfig& config = {});
+pa_activity_sig (PressRecognizer, uint8_t pin, PressSignal& press, const PressRecognizerConfig& config = {});
 
 /// An activity which prints to serial when the press status changes.
-pa_activity_sig (PressInspector, const char* msg, Press press);
+pa_activity_sig (PressInspector, const char* msg, const PressSignal& press);
 
 } } // namespace proto_activities::ard_utils

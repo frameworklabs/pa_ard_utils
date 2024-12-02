@@ -42,7 +42,9 @@ pa_activity_ctx (ButtonRecognizer, pa_co_res(2); pa_use_ns(internal, ButtonRecog
 namespace internal {
 
 pa_activity_decl (ReleasePressDetector, pa_ctx(), bool btn_was_pressed, bool btn_was_released, bool& was_pressed, bool& was_released);
-pa_activity_decl (PressRecognizerImpl, pa_ctx_tm(pa_use(ReleasePressDetector); bool was_pressed; bool was_released), const PressRecognizerConfig& config, bool btn_was_pressed, bool btn_was_released, Press& press);
+pa_activity_decl (PressSustainer, pa_ctx(), Press press, PressSignal& sig);
+pa_activity_decl (PressRecognizerImpl, pa_ctx_tm(pa_use(ReleasePressDetector); pa_use(PressSustainer); bool was_pressed; bool was_released),
+                                       const PressRecognizerConfig& config, bool btn_was_pressed, bool btn_was_released, PressSignal& press);
 
 } // namespace
 

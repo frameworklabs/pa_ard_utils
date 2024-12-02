@@ -26,16 +26,14 @@ struct ButtonRecognizerConfig {
 
 // Press
 
-/// The detected type of press - or no press if nothing got detected.
-///
-/// Note: In case of using the signal based version of the press reccognizer, the NO value
-///       will not be sent - instead the signal would not be present.
+/// The detected type of press
 enum class Press : uint8_t {
-    NO,     ///< No press detected
     SHORT,  ///< A short single press detected
     DOUBLE, ///< A double press detected
     LONG    ///< A long single press detected
 };
+
+using PressSignal = pa_val_signal<Press>;
 
 /// A configuration container for the PressRecognizer.
 struct PressRecognizerConfig {
