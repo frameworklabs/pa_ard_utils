@@ -12,14 +12,14 @@ namespace proto_activities { namespace ard_utils {
 
 namespace internal {
 
-pa_activity_def (LevelInspectorImpl, bool level, bool rising, bool falling, const char* high_msg, const char* low_msg) {
+pa_activity_def (LevelInspectorImpl, bool level, const EdgeSignal& edge, const char* high_msg, const char* low_msg) {
     if (level) {
         Serial.println(high_msg);
     } else {
         Serial.println(low_msg);
     }
-    pa_every (rising || falling) {
-        if (rising) {
+    pa_every (edge) {
+        if (edge.val() == Edge::RAISING) {
             Serial.println(high_msg);
         } else /* falling */ {
             Serial.println(low_msg);
@@ -32,8 +32,8 @@ pa_activity_def (LevelInspectorImpl, bool level, bool rising, bool falling, cons
 pa_activity_def (LevelInspector, bool level, const char* high_msg, const char* low_msg) {
     using namespace internal;
     pa_co(2) {
-        pa_with (LevelToEdgeConverter, level, pa_self.raising, pa_self.falling);
-        pa_with (LevelInspectorImpl, level, pa_self.raising, pa_self.falling, high_msg, low_msg);
+        pa_with (LevelToEdgeConverter, level, pa_self.edge);
+        pa_with (LevelInspectorImpl, level, pa_self.edge, high_msg, low_msg);
     } pa_co_end
 } pa_end
 

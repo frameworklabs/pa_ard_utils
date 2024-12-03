@@ -14,27 +14,27 @@ pa_activity_def (Delay_ms, pa_time_t delay) {
 
 // Logical
 
-pa_activity_def (LevelToEdgeConverter, bool level, pa_signal& raising, pa_signal& falling) {
+pa_activity_def (LevelToEdgeConverter, bool level, EdgeSignal& edge) {
     pa_self.prev_level = level;
     pa_every (level != pa_self.prev_level) {
         if (level) {
-            pa_emit (raising);
+            pa_emit_val (edge, Edge::RAISING);
         } else {
-            pa_emit (falling);
+            pa_emit_val (edge, Edge::FALLING);
         }
         pa_self.prev_level = level;
     } pa_every_end
 } pa_end
 
-pa_activity_def (EdgeToLevelConverter, bool raising, bool falling, bool& level) {
-    pa_await_immediate ((raising && !falling) || (falling && !raising));
-    if (falling) {
+pa_activity_def (EdgeToLevelConverter, const EdgeSignal& edge, bool& level) {
+    pa_await_immediate (edge);
+    if (edge.val() == Edge::FALLING) {
         level = false;
     }
     pa_repeat {
-        pa_await_immediate (raising && !falling);
+        pa_await_immediate (edge && edge.val() == Edge::RAISING);
         level = true;
-        pa_await (falling && !raising);
+        pa_await (edge && edge.val() == Edge::FALLING);
         level = false;
     }
 } pa_end

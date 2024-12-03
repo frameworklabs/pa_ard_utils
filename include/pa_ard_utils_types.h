@@ -8,6 +8,17 @@
 
 namespace proto_activities { namespace ard_utils {
 
+// Logical
+
+/// Represents an edge.
+enum class Edge : uint8_t {
+    RAISING,    ///< Raising edge from logical low to high
+    FALLING     ///< Falling edge from logical high to low
+};
+
+// The Edge as a signal.
+using EdgeSignal = pa_val_signal<Edge>;
+
 // Button
 
 /// The detected type of button action.

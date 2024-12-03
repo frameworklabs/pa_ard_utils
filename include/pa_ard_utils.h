@@ -6,7 +6,10 @@
 
 #include "priv/pa_ard_utils_priv.h"
 
+#include "pa_ard_utils_types.h"
 #include "pa_ard_utils_base.h"
+
+#include <proto_activities.h>
 
 namespace proto_activities { namespace ard_utils {
 
