@@ -10,6 +10,15 @@ namespace proto_activities { namespace ard_utils {
 
 // Button
 
+/// The detected type of button action.
+enum class ButtonAction : uint8_t {
+    PRESS,  ///< The button got pressed
+    RELEASE ///< The button got released
+};
+
+/// The button action type as a signal.
+using ButtonSignal = pa_val_signal<ButtonAction>;
+
 /// A Configuration container for the ButtonRecognizer.
 struct ButtonRecognizerConfig {
     ButtonRecognizerConfig(pa_time_t debounce_ms_ = 50, bool low_is_pressed_ = true, const char* inspect_msg_ = {}) : debounce_ms(debounce_ms_), low_is_pressed(low_is_pressed_), inspect_msg(inspect_msg_) {}
@@ -26,13 +35,14 @@ struct ButtonRecognizerConfig {
 
 // Press
 
-/// The detected type of press
+/// The detected type of press.
 enum class Press : uint8_t {
     SHORT,  ///< A short single press detected
     DOUBLE, ///< A double press detected
     LONG    ///< A long single press detected
 };
 
+/// The press type as a signal.
 using PressSignal = pa_val_signal<Press>;
 
 /// A configuration container for the PressRecognizer.

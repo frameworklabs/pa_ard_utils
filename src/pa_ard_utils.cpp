@@ -80,7 +80,7 @@ bool is_pressed(uint8_t pin, const ButtonRecognizerConfig& config) {
     }
 }
 
-pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config) {
+pa_activity_def (ButtonRecognizerImpl, const ButtonRecognizerConfig& config, uint8_t pin, ButtonSignal& action) {
     if (config.low_is_pressed) {
         pinMode(pin, INPUT_PULLUP);
     } else {
@@ -88,46 +88,37 @@ pa_activity_def (ButtonRecognizerImpl, uint8_t pin, pa_signal& was_pressed, pa_s
     }
 
     pa_repeat {
-        if (is_pressed(pin, config)) {
-            pa_emit (was_pressed);
-        } else {
-            pa_await (is_pressed(pin, config));
-            pa_emit (was_pressed);
-            pa_delay_ms (config.debounce_ms);
-        }
+        pa_await_immediate (is_pressed(pin, config));
+        pa_emit_val (action, ButtonAction::PRESS);
+        pa_delay_ms (config.debounce_ms);
 
-        if (!is_pressed(pin, config)) {
-            pa_emit (was_released);
-        } else {
-            pa_await (!is_pressed(pin, config));
-            pa_emit (was_released);
-            pa_delay_ms (config.debounce_ms);
-        }
+        pa_await_immediate (!is_pressed(pin, config));
+        pa_emit_val (action, ButtonAction::RELEASE);
+        pa_delay_ms (config.debounce_ms);
     }
 } pa_end
 
 } // namespace internal
 
-pa_activity_def (ButtonRecognizer, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config) {
+pa_activity_def (ButtonRecognizer, uint8_t pin, ButtonSignal& action, const ButtonRecognizerConfig& config) {
     using namespace internal;
     if (config.inspect_msg == nullptr) {
-        pa_run (ButtonRecognizerImpl, pin, was_pressed, was_released, config);
+        pa_run (ButtonRecognizerImpl, config, pin, action);
     } else {
         pa_co(2) {
-            pa_with (ButtonRecognizerImpl, pin, was_pressed, was_released, config);
-            pa_with (ButtonInspector, config.inspect_msg, was_pressed, was_released);
+            pa_with (ButtonRecognizerImpl, config, pin, action);
+            pa_with (ButtonInspector, config.inspect_msg, action);
         } pa_co_end
     }
 } pa_end
 
-pa_activity_def (ButtonInspector, const char* msg, bool was_pressed, bool was_released) {
-    pa_every (was_pressed || was_released) {
+pa_activity_def (ButtonInspector, const char* msg, const ButtonSignal& action) {
+    pa_every (action) {
         Serial.print(msg);
         Serial.print(' ');
-        if (was_pressed) {
+        if (action.val() == ButtonAction::PRESS) {
             Serial.println("was pressed");
-        }
-        if (was_released) {
+        } else {
             Serial.println("was released");
         }
     } pa_every_end
@@ -137,26 +128,24 @@ pa_activity_def (ButtonInspector, const char* msg, bool was_pressed, bool was_re
 
 namespace internal {
 
-pa_activity_def (ReleasePressDetector, bool btn_was_pressed, bool btn_was_released, bool& was_pressed, bool& was_released) {
+pa_activity_def (ReleasePressDetector, const ButtonSignal& action, bool& was_pressed, bool& was_released) {
     was_pressed = false;
     was_released = false;
-    pa_await (btn_was_released);
+    pa_await (action && action.val() == ButtonAction::RELEASE);
     was_released = true;
-    pa_await (btn_was_pressed);
+    pa_await (action && action.val() == ButtonAction::PRESS);
     was_pressed = true;
 } pa_end
 
 pa_activity_def (PressSustainer, Press press, PressSignal& sig) {
-    pa_always {
-        pa_emit_val (sig, std::move(press));
-    } pa_always_end
+    pa_sustain_val (sig, std::move(press));
 } pa_end
 
-pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool btn_was_pressed, bool btn_was_released, PressSignal& press) {
+pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, const ButtonSignal& action, PressSignal& press) {
     pa_repeat {
-        pa_await_immediate (btn_was_pressed);
+        pa_await_immediate (action && action.val() == ButtonAction::PRESS);
 
-        pa_after_ms_abort (config.double_tap_time_ms, ReleasePressDetector, btn_was_pressed, btn_was_released, pa_self.was_pressed, pa_self.was_released);
+        pa_after_ms_abort (config.double_tap_time_ms, ReleasePressDetector, action, pa_self.was_pressed, pa_self.was_released);
 
         if (pa_self.was_pressed) {
             pa_emit_val (press, Press::DOUBLE);
@@ -165,7 +154,7 @@ pa_activity_def (PressRecognizerImpl, const PressRecognizerConfig& config, bool 
             pa_emit_val (press, Press::SHORT);
             pa_pause;
         } else {
-            pa_when_abort (btn_was_released, PressSustainer, Press::LONG, press);
+            pa_when_abort (action && action.val() == ButtonAction::RELEASE, PressSustainer, Press::LONG, press);
         }
     }
 } pa_end
@@ -176,13 +165,13 @@ pa_activity_def (PressRecognizer, uint8_t pin, PressSignal& press, const PressRe
     using namespace internal;
     if (config.button_config.inspect_msg == nullptr) {
         pa_co(2) {
-            pa_with (ButtonRecognizer, pin, pa_self.btn_was_pressed, pa_self.btn_was_released, config.button_config);
-            pa_with (PressRecognizerImpl, config, pa_self.btn_was_pressed, pa_self.btn_was_released, press);
+            pa_with (ButtonRecognizer, pin, pa_self.action, config.button_config);
+            pa_with (PressRecognizerImpl, config, pa_self.action, press);
         } pa_co_end
     } else {
         pa_co(3) {
-            pa_with (ButtonRecognizer, pin, pa_self.btn_was_pressed, pa_self.btn_was_released, config.button_config);
-            pa_with (PressRecognizerImpl, config, pa_self.btn_was_pressed, pa_self.btn_was_released, press);
+            pa_with (ButtonRecognizer, pin, pa_self.action, config.button_config);
+            pa_with (PressRecognizerImpl, config, pa_self.action, press);
             pa_with (PressInspector, config.button_config.inspect_msg, press);
         } pa_co_end
     }

@@ -33,10 +33,10 @@ pa_activity_sig (LevelInspector, bool level, const char* high_msg, const char* l
 // Button
 
 /// An activity to debounce a physical button.
-pa_activity_sig (ButtonRecognizer, uint8_t pin, pa_signal& was_pressed, pa_signal& was_released, const ButtonRecognizerConfig& config = {});
+pa_activity_sig (ButtonRecognizer, uint8_t pin, ButtonSignal& action, const ButtonRecognizerConfig& config = {});
 
 /// An activity which prints to serial when the pressed or released status change.
-pa_activity_sig (ButtonInspector, const char* msg, bool was_pressed, bool was_released);
+pa_activity_sig (ButtonInspector, const char* msg, const ButtonSignal& action);
 
 // Press
 
