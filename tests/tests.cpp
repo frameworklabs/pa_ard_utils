@@ -24,7 +24,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
     
     level = true;
-    pa_emit_val (edge, Edge::RAISING);
+    pa_emit_val (edge, Edge::RISING);
     pa_pause;
 
     level = true;
@@ -64,7 +64,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
 
     level = true;
-    pa_emit_val (edge, Edge::RAISING);
+    pa_emit_val (edge, Edge::RISING);
     pa_pause;
 
     level = true;
@@ -121,23 +121,23 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RAISING);
+    pa_emit_val (expected_edge, Edge::RISING);
     expected_level = true;
     pa_pause;
 
-    // raising should have no effect
+    // rising should have no effect
     pa_pause;
 
     pa_emit_val (expected_edge, Edge::FALLING);
     expected_level = false;
     pa_pause;
 
-    // Test 2 - level primed with false - immediate raise
+    // Test 2 - level primed with false - immediate rise
 
     pa_emit (proceed);
 
     initial_level = false;
-    pa_emit_val (expected_edge, Edge::RAISING);
+    pa_emit_val (expected_edge, Edge::RISING);
     expected_level = true;
     pa_pause;
 
@@ -154,7 +154,7 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RAISING);
+    pa_emit_val (expected_edge, Edge::RISING);
     expected_level = true;
     pa_pause;
 
@@ -179,16 +179,16 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RAISING);
+    pa_emit_val (expected_edge, Edge::RISING);
     expected_level = true;
     pa_pause;
 
-    // Test 6 - level primed with true - immediate raise
+    // Test 6 - level primed with true - immediate rise
 
     pa_emit (proceed);
 
     initial_level = true;
-    pa_emit_val (expected_edge, Edge::RAISING);
+    pa_emit_val (expected_edge, Edge::RISING);
     expected_level = true;
     pa_pause;
 

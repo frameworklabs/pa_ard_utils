@@ -18,13 +18,16 @@ namespace proto_activities { namespace ard_utils {
 /// An activity which prints to serial when the level changes.
 pa_activity_sig (LevelInspector, bool level, const char* high_msg, const char* low_msg);
 
+/// An activity which prints to serial when an edge is emitted.
+pa_activity_sig (EdgeInspector, const EdgeSignal& edge, const char* rising_msg, const char* falling_msg);
+
 // Button
 
 /// An activity to debounce a physical button.
 pa_activity_sig (ButtonRecognizer, uint8_t pin, ButtonSignal& action, const ButtonRecognizerConfig& config = {});
 
 /// An activity which prints to serial when the pressed or released status change.
-pa_activity_sig (ButtonInspector, const char* msg, const ButtonSignal& action);
+pa_activity_sig (ButtonInspector, const ButtonSignal& action, const char* msg);
 
 // Press
 
@@ -32,6 +35,6 @@ pa_activity_sig (ButtonInspector, const char* msg, const ButtonSignal& action);
 pa_activity_sig (PressRecognizer, uint8_t pin, PressSignal& press, const PressRecognizerConfig& config = {});
 
 /// An activity which prints to serial when the press status changes.
-pa_activity_sig (PressInspector, const char* msg, const PressSignal& press);
+pa_activity_sig (PressInspector, const PressSignal& press, const char* msg);
 
 } } // namespace proto_activities::ard_utils

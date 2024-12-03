@@ -25,10 +25,10 @@ pa_activity_sig (Delay_ms, pa_time_t ms);
 
 // Logical
 
-/// An activity which converts a binary level into signals for its raising and falling edges.
+/// An activity which converts a binary level into signals for its rising and falling edges.
 pa_activity_sig (LevelToEdgeConverter, bool level, EdgeSignal& edge);
 
-/// An activity which converts raising and falling edges into a binary  level.
+/// An activity which converts rising and falling edges into a binary  level.
 pa_activity_sig (EdgeToLevelConverter, const EdgeSignal& edge, bool& level);
 
 // Button

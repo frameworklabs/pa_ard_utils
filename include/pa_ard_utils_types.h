@@ -12,8 +12,8 @@ namespace proto_activities { namespace ard_utils {
 
 /// Represents an edge.
 enum class Edge : uint8_t {
-    RAISING,    ///< Raising edge from logical low to high
-    FALLING     ///< Falling edge from logical high to low
+    RISING, ///< Rising edge from logical low to high
+    FALLING ///< Falling edge from logical high to low
 };
 
 // The Edge as a signal.

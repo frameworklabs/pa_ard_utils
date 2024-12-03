@@ -10,31 +10,26 @@ namespace proto_activities { namespace ard_utils {
 
 // Logical
 
-namespace internal {
-
-pa_activity_def (LevelInspectorImpl, bool level, const EdgeSignal& edge, const char* high_msg, const char* low_msg) {
+pa_activity_def (LevelInspector, bool level, const char* high_msg, const char* low_msg) {
     if (level) {
         Serial.println(high_msg);
     } else {
         Serial.println(low_msg);
     }
-    pa_every (edge) {
-        if (edge.val() == Edge::RAISING) {
-            Serial.println(high_msg);
-        } else /* falling */ {
-            Serial.println(low_msg);
-        }
-    } pa_every_end
-} pa_end
-
-} // namespace internal
-
-pa_activity_def (LevelInspector, bool level, const char* high_msg, const char* low_msg) {
-    using namespace internal;
     pa_co(2) {
         pa_with (LevelToEdgeConverter, level, pa_self.edge);
-        pa_with (LevelInspectorImpl, level, pa_self.edge, high_msg, low_msg);
+        pa_with (EdgeInspector, pa_self.edge, high_msg, low_msg);
     } pa_co_end
+} pa_end
+
+pa_activity_def (EdgeInspector, const EdgeSignal& edge, const char* rising_msg, const char* falling_msg) {
+    pa_every (edge) {
+        if (edge.val() == Edge::RISING) {
+            Serial.println(rising_msg);
+        } else /* falling */ {
+            Serial.println(falling_msg);
+        }
+    } pa_every_end
 } pa_end
 
 // Button
@@ -69,12 +64,12 @@ pa_activity_def (ButtonRecognizer, uint8_t pin, ButtonSignal& action, const Butt
     } else {
         pa_co(2) {
             pa_with (LogicalButtonRecognizer, is_pressed(pin, config), action, config);
-            pa_with (ButtonInspector, config.inspect_msg, action);
+            pa_with (ButtonInspector, action, config.inspect_msg);
         } pa_co_end
     }
 } pa_end
 
-pa_activity_def (ButtonInspector, const char* msg, const ButtonSignal& action) {
+pa_activity_def (ButtonInspector, const ButtonSignal& action, const char* msg) {
     pa_every (action) {
         Serial.print(msg);
         Serial.print(' ');
@@ -98,12 +93,12 @@ pa_activity_def (PressRecognizer, uint8_t pin, PressSignal& press, const PressRe
     } else {
         pa_co(2) {
             pa_with (LogicalPressRecognizer, is_pressed(pin, config.button_config), press);
-            pa_with (PressInspector, config.button_config.inspect_msg, press);
+            pa_with (PressInspector, press, config.button_config.inspect_msg);
         } pa_co_end
     }
 } pa_end
 
-pa_activity_def (PressInspector, const char* msg, const PressSignal& press) {
+pa_activity_def (PressInspector, const PressSignal& press, const char* msg) {
     pa_every (press) {
         Serial.print(msg);
         Serial.print(" recognized ");

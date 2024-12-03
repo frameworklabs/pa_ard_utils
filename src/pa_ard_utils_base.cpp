@@ -18,7 +18,7 @@ pa_activity_def (LevelToEdgeConverter, bool level, EdgeSignal& edge) {
     pa_self.prev_level = level;
     pa_every (level != pa_self.prev_level) {
         if (level) {
-            pa_emit_val (edge, Edge::RAISING);
+            pa_emit_val (edge, Edge::RISING);
         } else {
             pa_emit_val (edge, Edge::FALLING);
         }
@@ -32,7 +32,7 @@ pa_activity_def (EdgeToLevelConverter, const EdgeSignal& edge, bool& level) {
         level = false;
     }
     pa_repeat {
-        pa_await_immediate (edge && edge.val() == Edge::RAISING);
+        pa_await_immediate (edge && edge.val() == Edge::RISING);
         level = true;
         pa_await (edge && edge.val() == Edge::FALLING);
         level = false;

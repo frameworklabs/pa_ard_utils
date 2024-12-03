@@ -13,13 +13,8 @@ namespace proto_activities { namespace ard_utils {
 
 // Logical
 
-namespace internal {
-
-pa_activity_decl (LevelInspectorImpl, pa_ctx(), bool level, const EdgeSignal& edge, const char* high_msg, const char* low_msg);
-
-} // namespace
-
-pa_activity_ctx (LevelInspector, pa_co_res(2); pa_signal_res; pa_use(LevelToEdgeConverter); pa_use_ns(internal, LevelInspectorImpl);
+pa_activity_ctx (EdgeInspector);
+pa_activity_ctx (LevelInspector, pa_co_res(2); pa_signal_res; pa_use(LevelToEdgeConverter); pa_use(EdgeInspector);
                                  pa_def_val_signal(Edge, edge));
 
 // Button
