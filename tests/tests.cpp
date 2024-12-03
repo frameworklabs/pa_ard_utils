@@ -2,33 +2,10 @@
 
 // Includes
 
-#include "pa_ard_utils.h"
-
-#include "Arduino.h"
+#include "pa_ard_utils_base.h"
 
 #include <iostream>
 #include <assert.h>
-
-// Arduino Mocks
-
-namespace {
-
-uint8_t theDigitalReadValue = LOW;
-
-}
-
-void pinMode(uint8_t, uint8_t) {
-}
-
-uint8_t digitalRead(uint8_t) {
-    return theDigitalReadValue;
-}
-
-void SerialMock::print(char) {}
-void SerialMock::print(const char*) {}
-void SerialMock::println(const char*) {}
-
-SerialMock Serial;
 
 // Tests
 
@@ -40,7 +17,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     
     // Test 1 - start with low level
 
-    level = LOW;
+    level = false;
     expected_raising = false;
     expected_falling = false;
     pa_pause;
@@ -48,12 +25,12 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     // same if level did not change
     pa_pause;
     
-    level = HIGH;
+    level = true;
     expected_raising = true;
     expected_falling = false;
     pa_pause;
 
-    level = HIGH;
+    level = true;
     expected_raising = false;
     expected_falling = false;
     pa_pause;
@@ -61,12 +38,12 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     // same if level did not change
     pa_pause;
 
-    level = LOW;
+    level = false;
     expected_raising = false;
     expected_falling = true;
     pa_pause;
 
-    level = LOW;
+    level = false;
     expected_raising = false;
     expected_falling = false;
     pa_pause;
@@ -78,7 +55,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
 
     pa_emit (proceed);
 
-    level = HIGH;
+    level = true;
     expected_raising = false;
     expected_falling = false;
     pa_pause;
@@ -86,12 +63,12 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     // same if level did not change
     pa_pause;
 
-    level = LOW;
+    level = false;
     expected_raising = false;
     expected_falling = true;
     pa_pause;
 
-    level = LOW;
+    level = false;
     expected_raising = false;
     expected_falling = false;
     pa_pause;
@@ -99,12 +76,12 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     // same if level did not change
     pa_pause;
 
-    level = HIGH;
+    level = true;
     expected_raising = true;
     expected_falling = false;
     pa_pause;
 
-    level = HIGH;
+    level = true;
     expected_raising = false;
     expected_falling = false;
     pa_pause;

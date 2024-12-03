@@ -6,26 +6,11 @@
 
 #include "priv/pa_ard_utils_priv.h"
 
+#include "pa_ard_utils_base.h"
+
 namespace proto_activities { namespace ard_utils {
 
-// Timing
-
-/// A statement to dalay for the given multiple of minutes.
-#define pa_delay_m(time_m) pa_delay_s (time_m * 60);
-
-/// A statement to run the body once every mulitple of minuts given.
-#define pa_every_m(time_m) pa_every_s (time_m * 60)
-
-/// An activity which delays for the given milliseconds.
-pa_activity_sig (Delay_ms, pa_time_t ms);
-
 // Logical
-
-/// An activity which converts a binary level into signals for its raising and falling edges.
-pa_activity_sig (LevelToEdgeConverter, bool level, pa_signal& raising, pa_signal& falling);
-
-/// An activity which converts raising and falling edges into a binary  level.
-pa_activity_sig (EdgeToLevelConverter, bool raising, bool falling, bool& level);
 
 /// An activity which prints to serial when the level changes.
 pa_activity_sig (LevelInspector, bool level, const char* high_msg, const char* low_msg);

@@ -26,10 +26,10 @@ struct ButtonRecognizerConfig {
     /// How many milliseconds to debounce the button both on press and release.
     pa_time_t debounce_ms;
 
-    /// A LOW on the pin indicates a pressed button - this is typical for pulled-up buttons.
+    /// A LOW on the physical pin indicates a pressed button - this is typical for pulled-up buttons. Logical buttons will always be `true` when pressed.
     bool low_is_pressed;
 
-    /// If this is a non null string, a button (plus press) inspector will be active.
+    /// If this is a non null string, a button (or press) inspector will be active.
     const char* inspect_msg;
 };
 
