@@ -24,7 +24,7 @@ pa_activity_def (LevelInspector, bool level, const char* high_msg, const char* l
 
 pa_activity_def (EdgeInspector, const EdgeSignal& edge, const char* rising_msg, const char* falling_msg) {
     pa_every (edge) {
-        if (edge.val() == Edge::RISING) {
+        if (edge.val() == Edge::rising) {
             Serial.println(rising_msg);
         } else /* falling */ {
             Serial.println(falling_msg);
@@ -73,7 +73,7 @@ pa_activity_def (ButtonInspector, const ButtonSignal& action, const char* msg) {
     pa_every (action) {
         Serial.print(msg);
         Serial.print(' ');
-        if (action.val() == ButtonAction::PRESS) {
+        if (action.val() == ButtonAction::press) {
             Serial.println("was pressed");
         } else {
             Serial.println("was released");
@@ -103,14 +103,14 @@ pa_activity_def (PressInspector, const PressSignal& press, const char* msg) {
         Serial.print(msg);
         Serial.print(" recognized ");
         switch (press.val()) {
-            case Press::SHORT: Serial.println("SHORT press"); break;
-            case Press::LONG: Serial.println("LONG press begin"); break;
-            case Press::DOUBLE: Serial.println("DOUBLE press"); break;
+            case Press::short_press: Serial.println("short press"); break;
+            case Press::long_press: Serial.println("long press begin"); break;
+            case Press::double_press: Serial.println("double press"); break;
         }
-        if (press.val() == Press::LONG) {
+        if (press.val() == Press::long_press) {
             pa_await (!press);
             Serial.print(msg);
-            Serial.println(" recognized LONG press end");
+            Serial.println(" recognized long press end");
         }
     } pa_every_end
 } pa_end

@@ -12,8 +12,8 @@ namespace proto_activities { namespace ard_utils {
 
 /// Represents an edge.
 enum class Edge : uint8_t {
-    RISING, ///< Rising edge from logical low to high
-    FALLING ///< Falling edge from logical high to low
+    rising, ///< Rising edge from logical low to high
+    falling ///< Falling edge from logical high to low
 };
 
 // The Edge as a signal.
@@ -23,8 +23,8 @@ using EdgeSignal = pa_val_signal<Edge>;
 
 /// The detected type of button action.
 enum class ButtonAction : uint8_t {
-    PRESS,  ///< The button got pressed
-    RELEASE ///< The button got released
+    press,  ///< The button got pressed
+    release ///< The button got released
 };
 
 /// The button action type as a signal.
@@ -48,9 +48,9 @@ struct ButtonRecognizerConfig {
 
 /// The detected type of press.
 enum class Press : uint8_t {
-    SHORT,  ///< A short single press detected
-    DOUBLE, ///< A double press detected
-    LONG    ///< A long single press detected
+    short_press,    ///< A short single press detected
+    double_press,   ///< A double press detected
+    long_press      ///< A long single press detected
 };
 
 /// The press type as a signal.

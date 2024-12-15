@@ -18,9 +18,9 @@ pa_activity_def (LevelToEdgeConverter, bool level, EdgeSignal& edge) {
     pa_self.prev_level = level;
     pa_every (level != pa_self.prev_level) {
         if (level) {
-            pa_emit_val (edge, Edge::RISING);
+            pa_emit_val (edge, Edge::rising);
         } else {
-            pa_emit_val (edge, Edge::FALLING);
+            pa_emit_val (edge, Edge::falling);
         }
         pa_self.prev_level = level;
     } pa_every_end
@@ -28,13 +28,13 @@ pa_activity_def (LevelToEdgeConverter, bool level, EdgeSignal& edge) {
 
 pa_activity_def (EdgeToLevelConverter, const EdgeSignal& edge, bool& level) {
     pa_await_immediate (edge);
-    if (edge.val() == Edge::FALLING) {
+    if (edge.val() == Edge::falling) {
         level = false;
     }
     pa_repeat {
-        pa_await_immediate (edge && edge.val() == Edge::RISING);
+        pa_await_immediate (edge && edge.val() == Edge::rising);
         level = true;
-        pa_await (edge && edge.val() == Edge::FALLING);
+        pa_await (edge && edge.val() == Edge::falling);
         level = false;
     }
 } pa_end
@@ -44,11 +44,11 @@ pa_activity_def (EdgeToLevelConverter, const EdgeSignal& edge, bool& level) {
 pa_activity_def (LogicalButtonRecognizer, bool button, ButtonSignal& action, const ButtonRecognizerConfig& config) {
     pa_repeat {
         pa_await_immediate (button);
-        pa_emit_val (action, ButtonAction::PRESS);
+        pa_emit_val (action, ButtonAction::press);
         pa_delay_ms (config.debounce_ms);
 
         pa_await_immediate (!button);
-        pa_emit_val (action, ButtonAction::RELEASE);
+        pa_emit_val (action, ButtonAction::release);
         pa_delay_ms (config.debounce_ms);
     }
 } pa_end
@@ -60,9 +60,9 @@ namespace internal {
 pa_activity_def (ReleasePressDetector, const ButtonSignal& action, bool& was_pressed, bool& was_released) {
     was_pressed = false;
     was_released = false;
-    pa_await (action && action.val() == ButtonAction::RELEASE);
+    pa_await (action && action.val() == ButtonAction::release);
     was_released = true;
-    pa_await (action && action.val() == ButtonAction::PRESS);
+    pa_await (action && action.val() == ButtonAction::press);
     was_pressed = true;
 } pa_end
 
@@ -72,18 +72,18 @@ pa_activity_def (PressSustainer, Press press, PressSignal& sig) {
 
 pa_activity_def (LogicalPressRecognizerImpl, const PressRecognizerConfig& config, const ButtonSignal& action, PressSignal& press) {
     pa_repeat {
-        pa_await_immediate (action && action.val() == ButtonAction::PRESS);
+        pa_await_immediate (action && action.val() == ButtonAction::press);
 
         pa_after_ms_abort (config.double_tap_time_ms, ReleasePressDetector, action, pa_self.was_pressed, pa_self.was_released);
 
         if (pa_self.was_pressed) {
-            pa_emit_val (press, Press::DOUBLE);
+            pa_emit_val (press, Press::double_press);
             pa_pause;
         } else if (pa_self.was_released) {
-            pa_emit_val (press, Press::SHORT);
+            pa_emit_val (press, Press::short_press);
             pa_pause;
         } else {
-            pa_when_abort (action && action.val() == ButtonAction::RELEASE, PressSustainer, Press::LONG, press);
+            pa_when_abort (action && action.val() == ButtonAction::release, PressSustainer, Press::long_press, press);
         }
     }
 } pa_end

@@ -24,7 +24,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
     
     level = true;
-    pa_emit_val (edge, Edge::RISING);
+    pa_emit_val (edge, Edge::rising);
     pa_pause;
 
     level = true;
@@ -34,7 +34,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
 
     level = false;
-    pa_emit_val (edge, Edge::FALLING);
+    pa_emit_val (edge, Edge::falling);
     pa_pause;
 
     level = false;
@@ -54,7 +54,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
 
     level = false;
-    pa_emit_val (edge, Edge::FALLING);
+    pa_emit_val (edge, Edge::falling);
     pa_pause;
 
     level = false;
@@ -64,7 +64,7 @@ pa_activity (TestLevelToEdgeConverterSpec, pa_ctx(), pa_signal& proceed, bool& l
     pa_pause;
 
     level = true;
-    pa_emit_val (edge, Edge::RISING);
+    pa_emit_val (edge, Edge::rising);
     pa_pause;
 
     level = true;
@@ -117,18 +117,18 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     pa_pause;
     
     // falling should have no effect
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RISING);
+    pa_emit_val (expected_edge, Edge::rising);
     expected_level = true;
     pa_pause;
 
     // rising should have no effect
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
@@ -137,11 +137,11 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     pa_emit (proceed);
 
     initial_level = false;
-    pa_emit_val (expected_edge, Edge::RISING);
+    pa_emit_val (expected_edge, Edge::rising);
     expected_level = true;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
@@ -150,11 +150,11 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     pa_emit (proceed);
 
     initial_level = false;
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RISING);
+    pa_emit_val (expected_edge, Edge::rising);
     expected_level = true;
     pa_pause;
 
@@ -166,7 +166,7 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     expected_level = true;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
@@ -175,11 +175,11 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     pa_emit (proceed);
 
     initial_level = true;
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::RISING);
+    pa_emit_val (expected_edge, Edge::rising);
     expected_level = true;
     pa_pause;
 
@@ -188,11 +188,11 @@ pa_activity (TestEdgeToLevelConverterSpec, pa_ctx(), pa_signal& proceed, bool& i
     pa_emit (proceed);
 
     initial_level = true;
-    pa_emit_val (expected_edge, Edge::RISING);
+    pa_emit_val (expected_edge, Edge::rising);
     expected_level = true;
     pa_pause;
 
-    pa_emit_val (expected_edge, Edge::FALLING);
+    pa_emit_val (expected_edge, Edge::falling);
     expected_level = false;
     pa_pause;
 
