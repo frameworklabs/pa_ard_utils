@@ -227,6 +227,122 @@ pa_activity (TestEdgeToLevelConverter, pa_ctx(pa_co_res(4); pa_signal_res;
     } pa_co_end
 } pa_end
 
+// LogicalPressRecognizer Tests
+
+pa_activity (TestLogicalPressRecognizerSpec, pa_ctx(), ButtonSignal& button, PressSignal& press, pa_time_t& time_ms) {
+    
+    // short press with release within timeout
+    time_ms = 0;
+    pa_emit_val (button, ButtonAction::press);
+    pa_pause;
+    
+    time_ms = 100;
+    pa_emit_val (button, ButtonAction::release);
+    pa_pause;
+
+    time_ms = 300;
+    pa_emit_val (press, Press::short_press);
+    pa_pause;
+    
+    time_ms = 1000;
+    pa_pause;
+
+    // short press with release on timeout
+    time_ms = 0;
+    pa_emit_val (button, ButtonAction::press);
+    pa_pause;
+
+    time_ms = 300;
+    pa_emit_val (button, ButtonAction::release);
+    pa_emit_val (press, Press::short_press);
+    pa_pause;
+
+    time_ms = 1000;
+    pa_pause;
+    
+    // double press with second press within timeout
+    time_ms = 0;
+    pa_emit_val (button, ButtonAction::press);
+    pa_pause;
+
+    time_ms = 100;
+    pa_emit_val (button, ButtonAction::release);
+    pa_pause;
+
+    time_ms = 200;
+    pa_emit_val (button, ButtonAction::press);
+    pa_emit_val (press, Press::double_press);
+    pa_pause;
+    
+    time_ms = 1000;
+    pa_pause;
+
+    // double press with second press on timeout
+    time_ms = 0;
+    pa_emit_val (button, ButtonAction::press);
+    pa_pause;
+
+    time_ms = 100;
+    pa_emit_val (button, ButtonAction::release);
+    pa_pause;
+
+    time_ms = 300;
+    pa_emit_val (button, ButtonAction::press);
+    pa_emit_val (press, Press::double_press);
+    pa_pause;
+    
+    time_ms = 1000;
+    pa_pause;
+
+    // long press
+    time_ms = 0;
+    pa_emit_val (button, ButtonAction::press);
+    pa_pause;
+
+    time_ms = 300;
+    pa_emit_val (press, Press::long_press);
+    pa_pause;
+
+    time_ms = 400;
+    pa_emit_val (press, Press::long_press);
+    pa_pause;
+
+    time_ms = 500;
+    pa_emit_val (button, ButtonAction::release);
+    pa_pause;
+
+    time_ms = 1000;
+    pa_pause;
+
+} pa_end
+
+pa_activity (TestLogicalPressRecognizerTest, pa_ctx(pa_enter_res; pa_use_ns(internal, LogicalPressRecognizerImpl)), const ButtonSignal& button, pa_time_t time_ms, PressSignal& press) {
+    pa_enter {
+        pa_current_time_ms = time_ms;
+    };
+    pa_run (LogicalPressRecognizerImpl, {}, button, press);
+} pa_end
+
+pa_activity (TestLogicalPressRecognizerCheck, pa_ctx(), const PressSignal& actual, const PressSignal& expected) {
+    pa_always {
+        assert(bool(actual) == bool(expected));
+        if (actual) {
+            assert(actual.val() == expected.val());
+        }
+    } pa_always_end
+} pa_end
+
+pa_activity (TestLogicalPressRecognizer, pa_ctx(pa_co_res(4); pa_signal_res;
+                                                pa_use(TestLogicalPressRecognizerSpec); pa_use(TestLogicalPressRecognizerTest); pa_use(TestLogicalPressRecognizerCheck);
+                                                pa_time_t time_ms;
+                                                pa_def_val_signal(ButtonAction, button); pa_def_val_signal(Press, expected_press); pa_def_val_signal(Press, actual_press))) {
+    pa_co(3) {
+        pa_with (TestLogicalPressRecognizerSpec, pa_self.button, pa_self.expected_press, pa_self.time_ms);
+        pa_with_weak (TestLogicalPressRecognizerTest, pa_self.button, pa_self.time_ms, pa_self.actual_press);
+        pa_with_weak (TestLogicalPressRecognizerCheck, pa_self.actual_press, pa_self.expected_press);
+    } pa_co_end
+} pa_end
+
 // Test Driver
 
 #define run_test(nm) \
@@ -238,6 +354,7 @@ int main(int argc, char* argv[]) {
 
     run_test(TestLevelToEdgeConverter);
     run_test(TestEdgeToLevelConverter);
+    run_test(TestLogicalPressRecognizer);
 
     std::cout << "Done" << std::endl;
 

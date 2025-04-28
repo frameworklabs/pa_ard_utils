@@ -76,10 +76,10 @@ pa_activity_def (LogicalPressRecognizerImpl, const PressRecognizerConfig& config
 
         pa_after_ms_abort (config.double_tap_time_ms, ReleasePressDetector, action, pa_self.was_pressed, pa_self.was_released);
 
-        if (pa_self.was_pressed) {
+        if (pa_self.was_pressed || (action && action.val() == ButtonAction::press)) {
             pa_emit_val (press, Press::double_press);
             pa_pause;
-        } else if (pa_self.was_released) {
+        } else if (pa_self.was_released || (action && action.val() == ButtonAction::release)) {
             pa_emit_val (press, Press::short_press);
             pa_pause;
         } else {
